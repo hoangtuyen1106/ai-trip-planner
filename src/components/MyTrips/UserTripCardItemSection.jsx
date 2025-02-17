@@ -7,8 +7,8 @@ function UserTripCardItemSection({ trip }) {
             <div className="group">
                 <div className="overflow-hidden rounded-xl">
                     <img
-                        src="/placeholder.jpg"
-                        className="object-cover group-hover:scale-105 transition-all h-[220px]"
+                        src={trip.userSelection.travelImage || "/placeholder.jpg"}
+                        className="object-cover group-hover:scale-105 transition-all h-[220px] w-full"
                     />
                 </div>
                 <div>
