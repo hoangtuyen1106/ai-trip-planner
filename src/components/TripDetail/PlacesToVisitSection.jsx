@@ -10,7 +10,7 @@ function PlacesToVisitSection({ trip }) {
                         <h3 className="font-medium text-lg">
                             {item.day}
                         </h3>
-                        <div className="grid grid-cols-2 gap-5">
+                        <div className="grid grid-cols-3 gap-5">
                             {item?.plan.map((place, indexPlace) => (
                                 <div key={indexPlace}>
                                     <p className="font-medium text-sm text-orange-600">

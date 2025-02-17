@@ -7,7 +7,7 @@ import { GetPlaceDetails, PHOTO_REF_URL } from "@/service/GlobalApi";
 function PlaceCardItemSection({ place }) {
     const [photoUrl, setPhotoUrl] = useState();
     useEffect(() => {
-        place && GetPlacePhoto();
+        // place && GetPlacePhoto();
     }, [place]);
 
     const GetPlacePhoto = async () => {
@@ -27,13 +27,7 @@ function PlaceCardItemSection({ place }) {
             to={`https://www.google.com/maps/search/?api=1&query=${place?.placeName}`}
             target="_blank"
         >
-            <div className="border rounded-xl p-3 mt-2 gap-5 group grid grid-cols-[150px_1fr] gap-4">
-                <div className="overflow-hidden rounded-xl ">
-                    <img
-                        src={photoUrl ? photoUrl : image}
-                        className="rounded-xl group-hover:scale-105 transition-all object-cover aspect-1/1"
-                    />
-                </div>
+            <div className="border rounded-xl p-3 mt-2 gap-5 group">
                 <div className="">
                     <h4 className="font-bold text-lg">{place?.placeName}</h4>
                     <p className="text-sm text-gray-400">

@@ -26,6 +26,7 @@ import axios from "axios";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "@/service/firebaseConfig";
 import { useNavigate } from "react-router-dom";
+import { GetPhoto } from "@/service/UnsplashApi";
 
 function CreateTripPage() {
     const [formData, setFormData] = useState([]);
@@ -78,15 +79,38 @@ function CreateTripPage() {
         setLoading(false);
         SaveAiTrip(result?.response?.text());
     };
+    const getImagesHotel = async (hotelName) => {
+        if (!hotelName) return null;
+
+        try {
+            const resp = await GetPhoto(hotelName);
+            return resp.data.results[1]?.urls?.full || null;
+        } catch (error) {
+            console.error(`Error fetching image for ${hotelName}:`, error);
+            return null;
+        }
+    };
     const SaveAiTrip = async (tripData) => {
         setLoading(true);
         const user = JSON.parse(localStorage.getItem("user"));
         const docId = Date.now().toString();
+
+        let trip = JSON.parse(tripData);
+        
+        const updatedHotels = await Promise.all(
+            trip?.hotels.map(async (hotel) => {
+                const hotelImage = await getImagesHotel(hotel.hotelName);
+                return { ...hotel, hotelImage };
+            })
+        );
+
+        trip.hotels = updatedHotels;
+
         await setDoc(doc(db, "AITrips", docId), {
             userSelection: formData,
-            tripData: JSON.parse(tripData),
+            tripData: trip,
             userEmail: user?.email,
-            id: docId,
+            id: docId
         });
         setLoading(false);
         navigate("/trip/" + docId);
@@ -129,7 +153,7 @@ function CreateTripPage() {
                         >
                             Lựa chọn địa điểm:
                         </Label>
-                        
+
                         <Input
                             className="max-w-sm"
                             type="text"
@@ -141,18 +165,24 @@ function CreateTripPage() {
                         />
                         <div className="flex items-center gap-3 flex-wrap mt-2 mb-5">
                             <span className="text-sm">Gợi ý địa điểm:</span>
-                            {['Chùa Trấn Quốc', 'Chùa Tam Chúc', 'Đền Hoàng Bảy Bảo Hà', 'Chùa Hương', 'Yên Tử', 'Chùa Bái Đính'].map((place) => (
-                                <span key={place} className=" rounded-full text-sm border px-2 py-1 cursor-pointer hover:bg-gray-200"
-                                onClick={(e) =>
-                                    handleInputChange(
-                                        "location",place
-                                    )
-                                }
-                            >
-                                {place}
-                            </span>
+                            {[
+                                "Chùa Trấn Quốc",
+                                "Chùa Tam Chúc",
+                                "Đền Hoàng Bảy Bảo Hà",
+                                "Chùa Hương",
+                                "Yên Tử",
+                                "Chùa Bái Đính",
+                            ].map((place) => (
+                                <span
+                                    key={place}
+                                    className=" rounded-full text-sm border px-2 py-1 cursor-pointer hover:bg-gray-200"
+                                    onClick={(e) =>
+                                        handleInputChange("location", place)
+                                    }
+                                >
+                                    {place}
+                                </span>
                             ))}
-                            
                         </div>
                     </div>
                     <div className="grid w-full max-w-sm items-center gap-1.5">
@@ -161,7 +191,9 @@ function CreateTripPage() {
                             htmlFor="noOfDays"
                         >
                             Bạn dự định đi du lịch bao nhiêu ngày?
-                            <span className="text-sm text-gray-500 font-normal">(Phạm vi từ 1 đến 5 ngày)</span>
+                            <span className="text-sm text-gray-500 font-normal">
+                                (Phạm vi từ 1 đến 5 ngày)
+                            </span>
                         </Label>
                         <Input
                             className="max-w-sm"

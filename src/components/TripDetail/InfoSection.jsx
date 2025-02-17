@@ -2,7 +2,8 @@ import { Button } from "../ui/button";
 import image from "/placeholder.jpg";
 import { IoIosSend } from "react-icons/io";
 import { useEffect, useState } from "react";
-import { GetPlaceDetails, PHOTO_REF_URL } from "@/service/GlobalApi";
+// import { GetPlaceDetails, PHOTO_REF_URL } from "@/service/GlobalApi";
+import { GetPhoto } from "@/service/UnsplashApi";
 
 
 function InfoSection({ trip }) {
@@ -10,16 +11,21 @@ function InfoSection({ trip }) {
 
     useEffect(() => {
         trip && GetPlacePhoto();
-    }, []);
+    }, [trip]);
 
     const GetPlacePhoto = async () => {
-        const data = {
-            textQuery: trip?.tripData?.tripDetails?.location,
-        };
-        const result = await GetPlaceDetails(data).then((resp) => {
-            const PhotoUrl = PHOTO_REF_URL.replace('{NAME}', resp.data.places[0].photos[3].name);
-            setPhotoUrl(PhotoUrl);
-        });
+        // const data = {
+        //     textQuery: trip?.tripData?.tripDetails?.location,
+        // };
+        // const result = await GetPlaceDetails(data).then((resp) => {
+        //     const PhotoUrl = PHOTO_REF_URL.replace('{NAME}', resp.data.places[0].photos[3].name);
+        //     setPhotoUrl(PhotoUrl);
+        // });
+
+        // const result = await GetPhoto(trip?.userSelection?.location).then((resp) => {
+        //     const PhotoUrl = resp.data.results[1].urls.full;
+        //     setPhotoUrl(PhotoUrl);
+        // });
     };
     return (
         <>

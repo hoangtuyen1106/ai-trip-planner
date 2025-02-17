@@ -6,7 +6,7 @@ import { GetPlaceDetails, PHOTO_REF_URL } from "@/service/GlobalApi";
 function HotelCardItemSection({ hotel }) {
     const [photoUrl, setPhotoUrl] = useState();
     useEffect(() => {
-        hotel && GetPlacePhoto();
+        // hotel && GetPlacePhoto();
     }, [hotel]);
 
     const GetPlacePhoto = async () => {
@@ -27,12 +27,6 @@ function HotelCardItemSection({ hotel }) {
             target="_blank"
         >
             <div className="group cursor-pointer">
-                <div className="overflow-hidden rounded-xl">
-                    <img
-                        src={photoUrl ? photoUrl : image}
-                        className=" group-hover:scale-105 transition-all h-[180ox] w-full"
-                    />
-                </div>
                 <div className="my-2 flex flex-col gap-2">
                     <h3 className="font-medium">{hotel?.hotelName}</h3>
                     <p className="text-xs text-gray-500">

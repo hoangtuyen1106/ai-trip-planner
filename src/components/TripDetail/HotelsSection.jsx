@@ -5,7 +5,7 @@ import { useEffect } from "react";
 
 function HotelsSection({ trip }) {
     useEffect(() => {
-        trip && GetPlacePhoto();
+        // trip && GetPlacePhoto();
     }, []);
 
     const GetPlacePhoto = async () => {
