@@ -24,5 +24,5 @@ function UserTripCardItemSection({ trip }) {
         </Link>
     );
 }
-// 444555
+
 export default UserTripCardItemSection;
