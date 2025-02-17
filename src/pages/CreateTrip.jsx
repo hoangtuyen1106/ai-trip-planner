@@ -15,7 +15,7 @@ import {
     DialogContent,
     DialogDescription,
     DialogHeader,
-    DialogTitle
+    DialogTitle,
 } from "@/components/ui/dialog";
 import { FcGoogle } from "react-icons/fc";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
@@ -26,7 +26,6 @@ import axios from "axios";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "@/service/firebaseConfig";
 import { useNavigate } from "react-router-dom";
-
 
 function CreateTripPage() {
     const [formData, setFormData] = useState([]);
@@ -41,9 +40,7 @@ function CreateTripPage() {
         });
     };
 
-    useEffect(() => {
-        console.log(formData);
-    }, [formData]);
+    useEffect(() => {}, []);
 
     const handleLogin = useGoogleLogin({
         onSuccess: (codeResp) => GetUserProfile(codeResp),
@@ -56,8 +53,12 @@ function CreateTripPage() {
             setOpenDailog(true);
             return;
         }
+        if (formData?.noOfDays > 5 || formData?.noOfDays < 1) {
+            toast("Vui lòng nhập số ngày đi du lịch trong phạm vi từ 1 đến 5");
+            return;
+        }
         if (
-            (formData?.noOfDays > 5 && !formData?.location) ||
+            !formData?.location ||
             !formData?.budget ||
             !formData?.noOfDays ||
             !formData?.traveler
@@ -65,6 +66,7 @@ function CreateTripPage() {
             toast("Cac du lieu khong duoc de trong");
             return;
         }
+        toast("Vui lòng chờ trong ít phút. Dữ liệu đang được khởi tạo ...");
         setLoading(true);
         const FINAL_PROMPT = AI_PROMPT.replace("{location}", formData?.location)
             .replace("{totalDays}", formData?.noOfDays)
@@ -72,7 +74,7 @@ function CreateTripPage() {
             .replace("{bubget}", formData?.budget)
             .replace("{totalDays}", formData?.noOfDays);
         const result = await chatSession.sendMessage(FINAL_PROMPT);
-        console.log("---", result?.response?.text());
+
         setLoading(false);
         SaveAiTrip(result?.response?.text());
     };
@@ -87,7 +89,7 @@ function CreateTripPage() {
             id: docId,
         });
         setLoading(false);
-        navigate('/trip/' + docId);
+        navigate("/trip/" + docId);
     };
 
     const GetUserProfile = (tokenInfo) => {
@@ -118,21 +120,40 @@ function CreateTripPage() {
                 chuyến đi của chúng tôi sẽ tạo hành trình tùy chỉnh dựa trên sở
                 thích của bạn.
             </p>
-            <div className="mt-20 flex flex-col gap-10">
+            <div className="mt-20 flex flex-col gap-10 rounded-xs">
                 <div>
-                    <div className="grid w-full max-w-sm items-center gap-1.5">
+                    <div className="grid w-full items-center gap-1.5">
                         <Label
                             className="text-xl my-3 font-medium"
                             htmlFor="location"
                         >
-                            Lựa chọn địa điểm
+                            Lựa chọn địa điểm:
                         </Label>
+                        
                         <Input
+                            className="max-w-sm"
                             type="text"
+                            value={formData?.location}
                             onChange={(e) =>
                                 handleInputChange("location", e.target.value)
                             }
+                            placeholder="Nhập tên địa điểm bạn muốn đến ..."
                         />
+                        <div className="flex items-center gap-3 flex-wrap mt-2 mb-5">
+                            <span className="text-sm">Gợi ý địa điểm:</span>
+                            {['Chùa Trấn Quốc', 'Chùa Tam Chúc', 'Đền Hoàng Bảy Bảo Hà', 'Chùa Hương', 'Yên Tử', 'Chùa Bái Đính'].map((place) => (
+                                <span key={place} className=" rounded-full text-sm border px-2 py-1 cursor-pointer hover:bg-gray-200"
+                                onClick={(e) =>
+                                    handleInputChange(
+                                        "location",place
+                                    )
+                                }
+                            >
+                                {place}
+                            </span>
+                            ))}
+                            
+                        </div>
                     </div>
                     <div className="grid w-full max-w-sm items-center gap-1.5">
                         <Label
@@ -140,9 +161,12 @@ function CreateTripPage() {
                             htmlFor="noOfDays"
                         >
                             Bạn dự định đi du lịch bao nhiêu ngày?
+                            <span className="text-sm text-gray-500 font-normal">(Phạm vi từ 1 đến 5 ngày)</span>
                         </Label>
                         <Input
+                            className="max-w-sm"
                             type="number"
+                            min={1}
                             onChange={(e) =>
                                 handleInputChange("noOfDays", e.target.value)
                             }
@@ -208,7 +232,7 @@ function CreateTripPage() {
                 </div>
             </div>
             <div className="my-10 justify-end flex">
-                <Button onClick={OnGenerateTrip} disable={loading}>
+                <Button onClick={OnGenerateTrip} disabled={loading}>
                     {loading ? (
                         <AiOutlineLoading3Quarters className="h-7 w-7 animate-spin" />
                     ) : (

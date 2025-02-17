@@ -3,6 +3,7 @@ import HomePage from "./pages/Home";
 import CreateTripPage from "./pages/CreateTrip";
 import RootLayout from "./pages/Root";
 import TripDetailPage from "./pages/TripDetail";
+import MyTrips from "./pages/MyTrips";
 
 const router = createBrowserRouter([
     {
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
                 path: "/trip/:tripId",
                 id: "trip-detail",
                 element: <TripDetailPage />,
+            },
+            {
+                path: "/my-trips",
+                element: <MyTrips />,
             },
         ],
     },

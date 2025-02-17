@@ -1,4 +1,5 @@
-import Header from "@/components/custom/Header";
+import FooterSection from "@/components/layout/FooterSection";
+import Header from "@/components/layout/Header";
 import { Toaster } from "@/components/ui/sonner";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { Outlet } from "react-router-dom";
@@ -12,6 +13,7 @@ function RootLayout() {
                 <main>
                     <Outlet />
                 </main>
+                <FooterSection />
             </GoogleOAuthProvider>
         </>
     );
