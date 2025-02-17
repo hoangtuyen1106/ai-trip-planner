@@ -79,14 +79,14 @@ function CreateTripPage() {
         setLoading(false);
         SaveAiTrip(result?.response?.text());
     };
-    const getImagesHotel = async (hotelName) => {
-        if (!hotelName) return null;
+    const getImage = async (imageName) => {
+        if (!imageName) return null;
 
         try {
-            const resp = await GetPhoto(hotelName);
-            return resp.data.results[1]?.urls?.full || null;
+            const resp = await GetPhoto(imageName);
+            return resp.data.results[0]?.urls?.full || null;
         } catch (error) {
-            console.error(`Error fetching image for ${hotelName}:`, error);
+            console.error(`Error fetching image for ${imageName}:`, error);
             return null;
         }
     };
@@ -95,20 +95,22 @@ function CreateTripPage() {
         const user = JSON.parse(localStorage.getItem("user"));
         const docId = Date.now().toString();
 
-        let trip = JSON.parse(tripData);
+        // let trip = JSON.parse(tripData);
         
-        const updatedHotels = await Promise.all(
-            trip?.hotels.map(async (hotel) => {
-                const hotelImage = await getImagesHotel(hotel.hotelName);
-                return { ...hotel, hotelImage };
-            })
-        );
+        // const updatedHotels = await Promise.all(
+        //     trip?.hotels.map(async (hotel) => {
+        //         const hotelImage = await getImage(hotel.hotelName);
+        //         return { ...hotel, hotelImage };
+        //     })
+        // );
 
-        trip.hotels = updatedHotels;
+        // trip.hotels = updatedHotels;
+        const updateTravelImage = await getImage(formData?.location);
+        formData.travelImage = updateTravelImage;
 
         await setDoc(doc(db, "AITrips", docId), {
             userSelection: formData,
-            tripData: trip,
+            tripData: JSON.parse(tripData),
             userEmail: user?.email,
             id: docId
         });

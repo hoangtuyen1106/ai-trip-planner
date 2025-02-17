@@ -10,7 +10,7 @@ function InfoSection({ trip }) {
     const [photoUrl, setPhotoUrl] = useState();
 
     useEffect(() => {
-        trip && GetPlacePhoto();
+        // trip && GetPlacePhoto();
     }, [trip]);
 
     const GetPlacePhoto = async () => {
@@ -30,7 +30,7 @@ function InfoSection({ trip }) {
     return (
         <>
             <img
-                src={photoUrl ? photoUrl : image}
+                src={trip?.userSelection?.travelImage}
                 alt="placeholder"
                 className="h-[340px] w-full object-cover rounded "
             />
@@ -52,9 +52,6 @@ function InfoSection({ trip }) {
                         </p>
                     </div>
                 </div>
-                <Button>
-                    <IoIosSend />
-                </Button>
             </div>
         </>
     );

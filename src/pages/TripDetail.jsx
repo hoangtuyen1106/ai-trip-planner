@@ -22,7 +22,6 @@ function TripDetailPage() {
 
         if (docSnap.exists()) {
             setTrip(docSnap.data());
-            console.log(docSnap.data());
         } else {
             toast("No trip Found!");
         }
